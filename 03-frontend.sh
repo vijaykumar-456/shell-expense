@@ -49,7 +49,7 @@ cd /usr/share/nginx/html
 tar -xzf /tmp/frontend.tar.gz --strip-components=1 &>> $LOG_FILE
 VALIDATE $? "loading and unzipping frontend code"
 
-cp $SCRIPT_DIR/etc/nginx/default.d/expense.conf
+cp $SCRIPT_DIR/expense.conf /etc/nginx/default.d/expense.conf
 VALIDATE $? "Created systemctl service"
 
 nginx -t &>> $LOG_FILE
