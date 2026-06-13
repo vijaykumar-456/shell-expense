@@ -33,24 +33,27 @@ VALIDATE(){
     fi
 }
 
-dnf install nginx -y
+dnf install nginx -y &>> $LOG_FILE
 VALIDATE $? "Installing nginx"
 
-systemctl enable nginx
-systemctl start nginx
+systemctl enable nginx &>> $LOG_FILE
+systemctl start nginx &>> $LOG_FILE
 VALIDATE $? "Enabling and restarting nginx"
 
-rm -rf /usr/share/nginx/html/*
+rm -rf /usr/share/nginx/html/* 
 VALIDATE $? "Removing default html page"
 
 curl -o /tmp/frontend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-frontend-v3.tar.gz
 
-cd /usr/share/nginx/html
-tar -xzf /tmp/frontend.tar.gz --strip-components=1
+cd /usr/share/nginx/html 
+tar -xzf /tmp/frontend.tar.gz --strip-components=1 &>> $LOG_FILE
 VALIDATE $? "loading and unzipping frontend code"
 
 cp $SCRIPT_DIR/etc/nginx/default.d/expense.conf
-VALIDATE $? "Installing npm dependencies"
+VALIDATE $? "Created systemctl service"
+
+nginx -t &>> $LOG_FILE
+VALIDATE $? "Checking the systemctl service configured correctly or not"
 
 systemctl restart nginx
 VALIDATE $? "restarting nginx"
