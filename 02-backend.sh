@@ -47,15 +47,15 @@ fi
 rm -rf /app
 VALIDATE $? "Removing Existing app/code"
 
-rm -rf /tmp/expense-backend.zip
+rm -rf /tmp/backend.zip
 VALIDATE $? "Removing Exisiting expense-backend"
 
 mkdir -p /app &>> $LOG_FILE
 VALIDATE $? "Creating app folder for code"
 
-curl -o /tmp/expense-backend.zip curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-backend-v3.tar.gz  &>>$LOG_FILE
+curl -o /tmp/backend.zip curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-backend-v3.tar.gz  &>>$LOG_FILE
 cd /app
-unzip /tmp/expense-backend.zip &>>$LOG_FILE
+unzip /tmp/backend.zip &>>$LOG_FILE
 VALIDATE $? "Unzipping the expense-backend code"
 
 npm install &>> $LOG_FILE
