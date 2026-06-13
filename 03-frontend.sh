@@ -4,8 +4,9 @@ LOG_FOLDER='/var/log/expense'
 mkdir -p $LOG_FOLDER
 sudo chown -R ec2-user:ec2-user $LOG_FOLDER
 sudo chmod -R 755 $LOG_FOLDER
-
 LOG_FILE="/$LOG_FOLDER/$0.log"
+
+SCRIPT_DIR=$PWD
 
 R="\e[31m"
 G="\e[32m"
@@ -13,6 +14,8 @@ Y="\e[33m"
 N="\e[0m"
 
 TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S" )
+
+SCRIPT_DIR=$PWD
 
 USER_ID=$( id -u )
 
@@ -30,14 +33,16 @@ VALIDATE(){
     fi
 }
 
-dnf install mysql-server -y &>> $LOG_FILE
-VALIDATE $? "Installing mysql server"
+dnf install nginx -y
 
-systemctl enable mysqld &>> $LOG_FILE
-systemctl start mysqld 
-VALIDATE $? "Enabling and restarting mysql"
+systemctl enable nginx
+systemctl start nginx
 
-mysql_secure_installation --set-root-pass ExpenseApp@1 &>> $LOG_FILE
-VALIDATE $? "Setting up root password"
+rm -rf /usr/share/nginx/html/*
 
+curl -o /tmp/frontend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-frontend-v3.tar.gz
 
+cd /usr/share/nginx/html
+tar -xzf /tmp/frontend.tar.gz --strip-components=1
+
+cp $SCRIPT_DIR/etc/nginx/default.d/expense.conf

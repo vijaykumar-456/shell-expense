@@ -2,10 +2,10 @@
 
 LOG_FOLDER='/var/log/expense'
 mkdir -p $LOG_FOLDER
-sudo chown ec2-user:ec2-user -R $LOG_FOLDER
+sudo chown -R ec2-user:ec2-user $LOG_FOLDER
 sudo chmod -R 755 $LOG_FOLDER
+LOG_FILE="/$LOG_FOLDER/$0.log"
 
-LOG_FILE="$LOG_FOLDER/$0.log"
 
 R="\e[31m"
 G="\e[32m"
@@ -25,10 +25,10 @@ fi
 
 VALIDATE(){
     if [ $1 -ne 0 ]; then
-        echo -e "$TIMESTAMP [ERROR] $2 ... $R FAILURE $N" | tee -a &>> $LOG_FILE
+        echo -e "$TIMESTAMP [ERROR] $2 ... $R FAILURE $N" | tee -a  $LOG_FILE
         exit 1
     else
-        echo -e "$TIMESTAMP [INFO] $2 ... $G SUCCESS $N" | tee -a &>> $LOG_FILE
+        echo -e "$TIMESTAMP [INFO] $2 ... $G SUCCESS $N" | tee -a  $LOG_FILE
     fi
 }
 
