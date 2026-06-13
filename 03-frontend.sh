@@ -34,15 +34,23 @@ VALIDATE(){
 }
 
 dnf install nginx -y
+VALIDATE $? "Installing nginx"
 
 systemctl enable nginx
 systemctl start nginx
+VALIDATE $? "Enabling and restarting nginx"
 
 rm -rf /usr/share/nginx/html/*
+VALIDATE $? "Removing default html page"
 
 curl -o /tmp/frontend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-frontend-v3.tar.gz
 
 cd /usr/share/nginx/html
 tar -xzf /tmp/frontend.tar.gz --strip-components=1
+VALIDATE $? "loading and unzipping frontend code"
 
 cp $SCRIPT_DIR/etc/nginx/default.d/expense.conf
+VALIDATE $? "Installing npm dependencies"
+
+systemctl restart nginx
+VALIDATE $? "restarting nginx"
