@@ -21,5 +21,23 @@ if [ "$USER_ID" -ne 0 ]; then
     exit 1
 fi
 
+VALIDATE(){
+    if [ $1 -ne 0 ]; then
+        echo -e "$TIMESTAMP [ERROR] $2 ... $R FAILURE $N" | tee -a &>> $LOG_FILE
+        exit 1
+    else
+        echo -e "$TIMESTAMP [INFO] $2 ... $G SUCCESS $N" | tee -a &>> $LOG_FILE
+    fi
+}
+
+dnf install mysql-server -y &>> $LOG_FILE
+VALIDATE $? "Installing mysql server"
+
+systemctl enable mysqld &>> $LOG_FILE
+systemctl start mysqld &>> $LOG_FILE
+VALIDATE $? "Enabling and restarting mysql"
+
+mysql_secure_installation --set-root-pass ExpenseApp@1 
+VALIDATE $? "Setting up root password"
 
 
