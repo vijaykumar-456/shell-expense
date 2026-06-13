@@ -55,7 +55,7 @@ VALIDATE $? "Creating app folder for code"
 
 curl -o /tmp/backend.zip curl -o /tmp/backend.tar.gz https://raw.githubusercontent.com/daws-90s/expense-documentation/refs/heads/main/artifacts/expense-backend-v3.tar.gz  &>>$LOG_FILE
 cd /app
-unzip /tmp/backend.zip &>>$LOG_FILE
+tar -xzf /tmp/backend.tar.gz --strip-components=1 &>>$LOG_FILE
 VALIDATE $? "Unzipping the expense-backend code"
 
 npm install &>> $LOG_FILE
