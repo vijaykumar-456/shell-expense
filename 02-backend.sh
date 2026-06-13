@@ -6,6 +6,7 @@ sudo chown -R ec2-user:ec2-user $LOG_FOLDER
 sudo chmod -R 755 $LOG_FOLDER
 LOG_FILE="/$LOG_FOLDER/$0.log"
 
+MYSQL_HOST=mysql.learndevopskills.shop
 
 R="\e[31m"
 G="\e[32m"
@@ -68,8 +69,18 @@ VALIDATE $? "Creating systemctl service"
 dnf install mysql -y &>> $LOG_FILE
 VALIDATE $? "Installing mysql client"
 
-mysql -h mysql.learndevopskills.shop -u root -pExpenseApp@1 < /app/schema/backend.sql
+mysql -h $MYSQL_HOST -u root -pExpenseApp@1 < /app/schema/backend.sql
 VALIDATE $? "Loading data ... "
+
+mysql -h $MYSQL_HOST -u root -pExpenseApp@1 -e "use cities" &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -u root -pExpenseApp@1 < /app/schema/backend.sql
+    VALIDATE $? "Data loaded"
+else
+    echo -e "Data already loaded ... $Y SKIPPING $N"
+fi
+
+
 
 systemctl daemon-reload &>> $LOG_FILE
 systemctl enable backend &>> $LOG_FILE
